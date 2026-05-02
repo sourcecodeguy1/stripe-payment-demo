@@ -18,9 +18,8 @@ export default function PricingPage({ onSelect }: PricingPageProps) {
           <h1 className="text-4xl font-bold text-gray-900 mb-3">
             Choose your plan
           </h1>
-          <p className="text-lg text-gray-500 max-w-xl mx-auto">
-            Start for free, scale as you grow. No hidden fees, no surprises.
-            Cancel anytime.
+          <p className="text-lg text-gray-500 text-center">
+            Start for free, scale as you grow. No hidden fees, no surprises. Cancel anytime.
           </p>
         </div>
 
