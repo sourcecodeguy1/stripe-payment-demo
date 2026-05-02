@@ -5,7 +5,11 @@ import { CreditCard, Loader2, CheckCircle, XCircle } from 'lucide-react'
 
 type Status = 'idle' | 'loading' | 'success' | 'error'
 
-export default function CheckoutForm() {
+interface CheckoutFormProps {
+  priceLabel: string
+}
+
+export default function CheckoutForm({ priceLabel }: CheckoutFormProps) {
   const stripe = useStripe()
   const elements = useElements()
   const [status, setStatus] = useState<Status>('idle')
@@ -76,7 +80,7 @@ export default function CheckoutForm() {
         ) : (
           <>
             <CreditCard className="w-5 h-5" />
-            Pay $19.99
+            Pay {priceLabel}
           </>
         )}
       </button>

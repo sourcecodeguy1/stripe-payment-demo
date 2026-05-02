@@ -75,6 +75,26 @@ Use any future expiry date and any 3-digit CVC.
 | `POST` | `/api/payment-intent` | Creates a Stripe PaymentIntent |
 | `POST` | `/api/webhook` | Handles Stripe webhook events |
 
+## Webhook Testing (Local)
+
+Use the [Stripe CLI](https://stripe.com/docs/stripe-cli) to forward real Stripe events to your local Laravel server:
+
+```bash
+stripe listen --api-key sk_test_... --forward-to http://localhost:8001/api/webhook
+```
+
+Copy the `whsec_...` secret printed by the CLI and add it to `server/.env`:
+```
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+Trigger a test event:
+```bash
+stripe trigger payment_intent.succeeded --api-key sk_test_...
+```
+
+You should see `<-- [200] POST http://localhost:8001/api/webhook` in the CLI output.
+
 ## With Docker
 
 ```bash

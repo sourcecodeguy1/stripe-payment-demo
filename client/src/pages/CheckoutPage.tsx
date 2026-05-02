@@ -1,41 +1,45 @@
 import { useEffect, useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
-import { ShoppingBag, Shield, Zap } from 'lucide-react'
+import { ShoppingBag, Shield, Zap, ArrowLeft } from 'lucide-react'
 import CheckoutForm from '../components/CheckoutForm'
 import api from '../lib/axios'
+import type { Product } from '../lib/products'
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string)
 
-interface OrderItem {
-  name: string
-  description: string
-  price: string
+interface CheckoutPageProps {
+  product: Product
+  onBack: () => void
 }
 
-const ORDER_ITEM: OrderItem = {
-  name: 'Pro Subscription',
-  description: 'Unlimited access to all features for 1 year',
-  price: '$19.99',
-}
-
-export default function CheckoutPage() {
+export default function CheckoutPage({ product, onBack }: CheckoutPageProps) {
   const [clientSecret, setClientSecret] = useState<string>('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
+    setLoading(true)
+    setClientSecret('')
+    setError('')
     api
-      .post('/payment-intent', { amount: 1999, currency: 'usd' })
+      .post('/payment-intent', { amount: product.price, currency: 'usd' })
       .then((res) => setClientSecret(res.data.clientSecret))
       .catch(() => setError('Failed to initialize payment. Please try again.'))
       .finally(() => setLoading(false))
-  }, [])
+  }, [product])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
         <div className="text-center mb-8">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors mb-4"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Change plan
+          </button>
           <h1 className="text-3xl font-bold text-gray-900">Complete Your Purchase</h1>
           <p className="text-gray-500 mt-2">Secure checkout powered by Stripe</p>
         </div>
@@ -55,16 +59,16 @@ export default function CheckoutPage() {
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-gray-800">{ORDER_ITEM.name}</p>
-                <p className="text-sm text-gray-500 mt-0.5">{ORDER_ITEM.description}</p>
+                <p className="font-semibold text-gray-800">{product.name} Plan</p>
+                <p className="text-sm text-gray-500 mt-0.5">{product.description}</p>
               </div>
-              <p className="font-bold text-gray-900">{ORDER_ITEM.price}</p>
+              <p className="font-bold text-gray-900">{product.priceLabel}</p>
             </div>
 
             <div className="flex flex-col gap-2 pt-4 border-t border-gray-100">
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Subtotal</span>
-                <span>$19.99</span>
+                <span>{product.priceLabel}</span>
               </div>
               <div className="flex justify-between text-sm text-gray-500">
                 <span>Tax</span>
@@ -72,7 +76,7 @@ export default function CheckoutPage() {
               </div>
               <div className="flex justify-between font-bold text-gray-900 text-lg mt-2">
                 <span>Total</span>
-                <span>$19.99</span>
+                <span>{product.priceLabel}</span>
               </div>
             </div>
 
@@ -114,7 +118,7 @@ export default function CheckoutPage() {
                   },
                 }}
               >
-                <CheckoutForm />
+                <CheckoutForm priceLabel={product.priceLabel} />
               </Elements>
             )}
           </div>
