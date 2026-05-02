@@ -1,0 +1,18 @@
+# Laravel
+server/.env
+server/vendor/
+server/node_modules/
+server/storage/logs/*.log
+server/bootstrap/cache/*.php
+server/public/hot
+server/public/storage
+server/storage/app/public
+
+# React / Node
+client/.env
+client/node_modules/
+client/dist/
+
+# OS
+.DS_Store
+Thumbs.db

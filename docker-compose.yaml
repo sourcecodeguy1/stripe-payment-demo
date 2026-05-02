@@ -1,0 +1,21 @@
+services:
+  server:
+    image: php:8.3-cli
+    working_dir: /var/www/server
+    volumes:
+      - ./server:/var/www/server
+    ports:
+      - "8000:8000"
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    environment:
+      - APP_ENV=local
+
+  client:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    command: npm run dev -- --host
