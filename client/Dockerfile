@@ -1,7 +1,8 @@
 # Stage 1: Build
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package.json yarn.lock ./
+RUN corepack enable
+COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable
 COPY . .
 ARG VITE_STRIPE_PUBLISHABLE_KEY
