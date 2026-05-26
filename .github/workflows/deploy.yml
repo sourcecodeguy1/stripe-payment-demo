@@ -109,4 +109,7 @@ jobs:
             cd ${{ secrets.SERVER_DIRECTORY }}
             docker compose pull stripe-client stripe-api
             docker compose up -d stripe-client stripe-api
+            for img in ${{ secrets.DOCKER_USERNAME }}/stripe-client ${{ secrets.DOCKER_USERNAME }}/stripe-api; do
+              docker images $img --format '{{.Tag}}' | grep -v latest | sort -r | tail -n +3 | xargs -r -I {} docker rmi $img:{}
+            done
             docker image prune -f
